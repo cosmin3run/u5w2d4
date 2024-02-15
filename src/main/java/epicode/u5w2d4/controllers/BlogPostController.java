@@ -1,11 +1,14 @@
 package epicode.u5w2d4.controllers;
 
 import epicode.u5w2d4.entities.BlogPost;
+import epicode.u5w2d4.exceptions.BadRequestException;
 import epicode.u5w2d4.payloads.NewBlogPostPayload;
 import epicode.u5w2d4.services.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -36,7 +39,11 @@ public class BlogPostController {
     //Save BlogPost
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BlogPost saveBlogPost(@RequestBody NewBlogPostPayload newBlogPost) {return this.blogPostService.saveBlogPost(newBlogPost);}
+    public BlogPost saveBlogPost(@RequestBody @Validated NewBlogPostPayload newBlogPost, BindingResult validation) {
+        if (validation.hasErrors()){
+            throw new BadRequestException(validation.getAllErrors());
+        }
+        return this.blogPostService.saveBlogPost(newBlogPost);}
 
     @PutMapping("/{id}")
     public BlogPost findByAndUpdate(@PathVariable UUID id, @RequestBody NewBlogPostPayload updatedBlogPost){

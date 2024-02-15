@@ -25,6 +25,7 @@ public class BlogPostService {
     AuthorService authorService;
 
 
+
     public Page<BlogPost> getBlogPosts(int pageNumber, int size, String orderBy){
         if (size > 20) size = 20;
         Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(orderBy));
@@ -34,11 +35,15 @@ public class BlogPostService {
     public BlogPost saveBlogPost(NewBlogPostPayload newBlogPost){
         Author author = authorService.findById(newBlogPost.getAuthorId());
         BlogPost newPost = new BlogPost();
+
+
         newPost.setReadTime(newBlogPost.getReadTime());
         newPost.setTitle(newBlogPost.getTitle());
         newPost.setContent(newBlogPost.getContent());
         newPost.setCover(newBlogPost.getCover());
         newPost.setCategory(newBlogPost.getCategory());
+
+
         newPost.setAuthor(author);
         return blogPostsDAO.save(newPost);
     }
